@@ -1,0 +1,8 @@
+{
+  "name": "chat-online-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/AndreLucas2103/chat-online-ts.git",
+  "author": "Andre <p4n1c0021@gmail.com>",
+  "license": "MIT"
+}
