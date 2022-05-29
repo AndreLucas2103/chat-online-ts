@@ -3,18 +3,18 @@ import { User } from "./User";
 import { v4 as uuidV4 } from "uuid";
 
 type ChatRoom = Document & {
-    idUser: User[];
+    idUsers: User[];
     idChatRoom: string;
 }
 
 const ChatRoomSchema = new Schema({
-    idUser: [{
+    idUsers: [{
         type: Schema.Types.ObjectId,
         ref: "Users"
     }],
     idChatRoom: {
         type: String,
-        default: uuidV4()
+        default: uuidV4
     }
 })
 
