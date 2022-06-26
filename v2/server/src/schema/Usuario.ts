@@ -1,22 +1,27 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 
-type Atendente = Document & {
-    _id: Types.ObjectId;
+type Usuario = Document & {
     email: string;
-    socket_id: string;
+    socketId: string;
     nome: string;
     status: string;
     foto: string;
 }
 
-const AtendenteSchema = new Schema<Atendente>({
-    _id: Types.ObjectId,
-    email: String,
-    socket_id: String,
-    nome: String,
+const UsuarioSchema = new Schema<Usuario>({
+    email: {
+        type: String,
+        required: true
+    },
+    nome: {
+        type: String,
+        required: true
+    },
+    socketId: String,
     status: {
         type: String,
         enum: ["online", "offline", "ausente", "ocupado"],
+        default: "offline"
     },
     foto: {
         type: String,
@@ -24,6 +29,6 @@ const AtendenteSchema = new Schema<Atendente>({
     }
 })
 
-const Atendente = mongoose.model<Atendente>("Atendentes", AtendenteSchema);
+const Usuario = mongoose.model<Usuario>("Usuarios", UsuarioSchema);
 
-export { Atendente };
+export { Usuario };

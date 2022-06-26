@@ -1,9 +1,17 @@
-import express from 'express';
+import express, {
+    NextFunction, Request, Response,
+} from 'express';
+require('express-async-errors');
+
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
+import { router } from './api/routes';
+import { AppError } from './api/errors/AppError';
+import { handleErrorMiddleware } from './api/middlewares/handleErrorMiddleware';
 
 const app = express();
+app.use(express.json());
 
 const server = createServer(app);
 
@@ -17,8 +25,8 @@ const io = new Server(server, {
     }
 });
 
-app.get('/', (req, res) => {
-    return res.send('Hello World');
-});
+app.use(router)
+
+app.use(handleErrorMiddleware);
 
 export { server, io }
