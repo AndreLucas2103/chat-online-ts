@@ -1,3 +1,8 @@
+export const AcessoRestrito = () => {
+    return null
+}
+
+/* 
 import { useDispatch, useSelector } from "react-redux";
 import { setAcessoRestrito } from "../../redux/store/actions/Geral.action";
 import { RootState } from "../../redux/store/reducers";
@@ -57,4 +62,4 @@ export const AcessoRestritoDiv = ({ codigoPermissao }: { codigoPermissao: string
             </div>
         </div>
     )
-}
+} */

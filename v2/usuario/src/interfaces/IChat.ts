@@ -1,5 +1,5 @@
 export interface IChat {
-    id: number;
+    _id: string;
     cliente: {
         nome: string;
         foto: string;
@@ -7,5 +7,6 @@ export interface IChat {
     };
     socketId: string;
     situacao: 1 | 2 | 3; // 1-aguardando, 2-andamento, 3-finalizado
-    idUsuarioFila: number | null;
+    idUsuarioFila: string | null;
+    uuid: string;
 }

@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
+import { routes } from './api/routes';
 
 const app = express();
 
@@ -16,6 +17,8 @@ const io = new Server(server, {
         origin: '*',
     },
 });
+
+app.use(routes);
 
 app.get('/', (req, res) => res.send('Hello World'));
 

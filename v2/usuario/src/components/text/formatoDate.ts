@@ -1,6 +1,6 @@
 import dayjs from "dayjs"
 import utc from 'dayjs/plugin/utc'
-import { store } from "../../redux/store";
+/* import { store } from "../../redux/store"; */
 
 dayjs.extend(utc)
 
@@ -18,7 +18,7 @@ interface IDateOptions {
 }
 
 export const dateString = (data: string | Date, options?: IDateOptions): string => {
-    const { unidade: { unidade } } = store.getState()
+    /* const { unidade: { unidade } } = store.getState() */
 
     if (typeof data === "string") {
         data = new Date(data)
@@ -26,8 +26,7 @@ export const dateString = (data: string | Date, options?: IDateOptions): string 
 
     if (!options) options = {}
 
-    const timezone = options.timezone === 0 ? 0 : unidade.timezone ? unidade.timezone : "-00:00"
-
+    /* const timezone = options.timezone === 0 ? 0 : unidade.timezone ? unidade.timezone : "-00:00" */
     if (options.addMonth) data = dayjs(data).add(options.addMonth, 'month').format()
     if (options.addYear) data = dayjs(data).add(options.addYear, 'year').format()
     if (options.addDay) data = dayjs(data).add(options.addDay, 'day').format()
@@ -38,7 +37,7 @@ export const dateString = (data: string | Date, options?: IDateOptions): string 
     if (options.returnStartOf) data = dayjs(data).startOf(options.returnStartOf).format()
     if (options.returnEndOf) data = dayjs(data).endOf(options.returnEndOf).format()
 
+    /* .utcOffset(timezone) */
     return dayjs(data)
-        .utcOffset(timezone)
         .format(options.format || undefined)
 }

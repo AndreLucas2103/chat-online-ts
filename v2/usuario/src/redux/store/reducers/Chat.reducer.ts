@@ -1,6 +1,6 @@
 
 interface IChatRedux {
-    id: number;
+    id: string;
     cliente: {
         nome: string;
         foto: string;
@@ -8,8 +8,9 @@ interface IChatRedux {
     };
     socketId: string;
     situacao: 1 | 2 | 3; // 1-aguardando, 2-andamento, 3-finalizado
-    idUsuarioFila: number | null;
+    idUsuarioFila: string | null;
     novaMensagem: number;
+    uuid: string;
 }
 
 interface IChatsRedux {

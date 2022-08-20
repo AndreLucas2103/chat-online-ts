@@ -1,4 +1,49 @@
+import { useAppDispatch } from '@/utils/hooks/useRedux'
+import { socket } from '@/utils/services/socketio'
+import { toastError } from 'components/avisos/toast'
+import { authToken } from 'config/authToken'
+import { IUsuario } from 'interfaces/IUsuario'
+import { useCookies } from 'react-cookie'
+import { useForm } from 'react-hook-form'
+import { setUsuario } from 'redux/store/actions/Usuario.action'
+import { ICallbackSocket } from '../../interfaces/ICallbackSocket'
+
+interface ILoginFormData {
+    email: string
+    senha: string
+}
+
 export const Login = () => {
+    const [cookies, setCookie, removeCookie] = useCookies([authToken.nomeToken]);
+
+    const { register, handleSubmit } = useForm<ILoginFormData>();
+
+    const dispatch = useAppDispatch();
+
+    const onSubmitLogin = (data: ILoginFormData) => {
+        socket.emit('auth_login', data, (callback: ICallbackSocket<{ token: string, usuario: IUsuario }>) => {
+            if (callback.erro) {
+                toastError(callback.erro.mensagem)
+            }
+
+            const { data: { usuario } } = callback
+
+            setCookie(authToken.nomeToken, callback.data.token, { path: '/' })
+
+            dispatch(setUsuario({
+                administrador: usuario.administrador,
+                email: usuario.email,
+                id: usuario._id,
+                nomeCompleto: usuario.nomeCompleto,
+                primeiroNome: usuario.primeiroNome,
+                foto: usuario.foto,
+                situacao: usuario.situacao,
+                socketId: usuario.socketId,
+                statusChat: usuario.statusChat,
+            }))
+        })
+    }
+
     return (
         <div className="min-h-full h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-blue-200">
             <div className="max-w-md w-full space-y-8 bg-gray-100 p-40px rounded-[20px] ">
@@ -14,7 +59,7 @@ export const Login = () => {
                 </div>
                 <form
                     className="mt-8 space-y-6"
-                    action="#" method="POST"
+                    onSubmit={handleSubmit(onSubmitLogin)}
                 >
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
@@ -22,22 +67,19 @@ export const Login = () => {
                                 Email address
                             </label>
                             <input
-                                id="email-address"
-                                name="email"
+                                {...register("email", { required: true })}
                                 type="email"
                                 autoComplete="email"
-                                required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Endereço de e-mail"
                             />
                         </div>
                         <div>
                             <input
+                                {...register("senha", { required: true })}
                                 id="password"
-                                name="password"
                                 type="password"
                                 autoComplete="current-password"
-                                required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Senha"
                             />

@@ -15,7 +15,7 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "consistent-return": 2,
+    "consistent-return": ["error", { "treatUndefinedAsUnspecified": true }],
     "indent": [1, 4, { "SwitchCase": 1 }],
     "no-else-return": 1,
     "semi": [1, "always"],
@@ -57,6 +57,8 @@
     "class-methods-use-this": "off",
     "import/extensions": "off",
     "camelcase": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "@typescript-eslint/ban-types": "off",
+    "no-void": "off"
   }
 }
