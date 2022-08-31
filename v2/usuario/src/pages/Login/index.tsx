@@ -33,7 +33,7 @@ export const Login = () => {
             dispatch(setUsuario({
                 administrador: usuario.administrador,
                 email: usuario.email,
-                id: usuario._id,
+                _id: usuario._id,
                 nomeCompleto: usuario.nomeCompleto,
                 primeiroNome: usuario.primeiroNome,
                 foto: usuario.foto,

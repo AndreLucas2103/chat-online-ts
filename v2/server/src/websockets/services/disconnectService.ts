@@ -1,13 +1,14 @@
-import { Usuario } from 'schemas/Usuario';
 import { Socket } from 'socket.io';
+import { Usuario } from '../../schemas/Usuario';
 
-export async function logoutUsuarioService(socket: Socket): Promise<void> {
+export async function disconnectService(socket: Socket): Promise<void> {
     const usuario = await Usuario.findOne({ socketId: socket.id });
 
     if (!usuario) return;
 
-    usuario.statusChat = 2;
+    usuario.statusChat = 3;
     usuario.socketId = null;
+    usuario.qtdChatsPassaramFila = 0;
 
     await usuario.save();
 }

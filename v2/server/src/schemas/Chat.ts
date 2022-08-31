@@ -2,8 +2,8 @@ import mongoose, { Schema, Types } from 'mongoose';
 import { v4 as uuidV4 } from 'uuid';
 
 interface IChat {
+    _id: Types.ObjectId;
     idCliente: Types.ObjectId;
-    socketId: string;
     uuid: string;
     situacao: 1 | 2 | 3; // 1-aguardando, 2-andamento, 3-finalizado
     idUsuarioFila: Types.ObjectId | null;
@@ -16,10 +16,6 @@ const ChatSchema = new Schema<IChat>({
     idCliente: {
         type: Schema.Types.ObjectId,
         ref: 'Clientes',
-        required: true,
-    },
-    socketId: {
-        type: String,
         required: true,
     },
     situacao: {
@@ -46,7 +42,7 @@ const ChatSchema = new Schema<IChat>({
     dataInicio: {
         type: Date,
         required: true,
-        default: new Date(),
+        default: Date.now,
     },
     dataFim: {
         type: Date,

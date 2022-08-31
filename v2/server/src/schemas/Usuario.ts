@@ -1,6 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 interface IUsuario {
+    _id: Types.ObjectId;
     primeiroNome: string;
     nomeCompleto: string;
     email: string;
@@ -10,6 +11,7 @@ interface IUsuario {
     situacao: 1 | 2; // 1-ativo, 2-inativo
     statusChat: 1 | 2 | 3; // 1-online, 2-ausente, 3-offline
     socketId: string | null;
+    qtdChatsPassaramFila: number;
 }
 
 const UsuarioSchema = new Schema<IUsuario>({
@@ -24,6 +26,7 @@ const UsuarioSchema = new Schema<IUsuario>({
     email: {
         type: String,
         required: true,
+        unique: true,
     },
     senha: {
         type: String,
@@ -54,6 +57,10 @@ const UsuarioSchema = new Schema<IUsuario>({
     socketId: {
         type: String,
         default: null,
+    },
+    qtdChatsPassaramFila: {
+        type: Number,
+        default: 0,
     },
 });
 

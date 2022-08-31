@@ -13,9 +13,9 @@ export const menus: IMenu[] = [
         url: "/",
     },
     {
-        titulo: "Chats",
+        titulo: "Atendimento",
         icone: <img src="https://img.icons8.com/material-rounded/24/FFFFFF/chat--v1.png" className="w-[20px]" />,
-        url: "/chats",
+        url: "/atendimento/chats",
     },
     {
         titulo: "Agenda",

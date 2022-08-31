@@ -1,6 +1,7 @@
 import mongoose, { Schema, Types } from 'mongoose';
 
 interface IMensagem {
+    _id: Types.ObjectId;
     idChat: Types.ObjectId;
     idUsuario: Types.ObjectId | null;
     idCliente: Types.ObjectId | null;

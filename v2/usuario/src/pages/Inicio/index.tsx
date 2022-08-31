@@ -5,7 +5,7 @@ export const Inicio = () => {
 
     return (
         <div>
-            {usuario?.nomeCompleto}
+            {usuario?.nomeCompleto} - {usuario?.statusChat}
         </div>
     )
 }

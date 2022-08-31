@@ -1,6 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 interface ICliente {
+    _id: Types.ObjectId;
     nome: string;
     foto: string;
     email: string;

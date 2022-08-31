@@ -29,10 +29,10 @@ export async function loginUsuarioService(
 
     if (!await bcrypt.compare(senha, usuario.senha)) return void callback(new CallbackError('Senha inválida', '401'));
 
-    const token = generateToken({ id: usuario.id });
+    const token = generateToken({ id: usuario._id });
 
     usuario.socketId = socket.id;
-    usuario.statusChat = 1;
+    usuario.statusChat = 2;
 
     const usuarioSave = await usuario.save();
 

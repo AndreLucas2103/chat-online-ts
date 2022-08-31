@@ -1,12 +1,14 @@
 
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import { LayoutSistema } from "../components/layout/LayoutSistema";
-import { Chats } from "../pages/Chats";
-import { Inicio } from "../pages/Inicio";
+import { LayoutSistema } from "components/layout/LayoutSistema";
+import { Inicio } from "pages/Inicio";
+import { Chat } from "pages/atendimento/Chats/Chat";
 
-import { Login } from "../pages/Login";
-import { useAppSelector } from "../utils/hooks/useRedux";
+
+import { Login } from "pages/Login";
+import { useAppSelector } from "utils/hooks/useRedux";
+import { Chats } from "pages/atendimento/Chats";
 
 export const AppRoutes = () => {
     const { usuario } = useAppSelector((state) => state.usuario);
@@ -14,19 +16,21 @@ export const AppRoutes = () => {
     const rotaUsuarioLogado = (
         <Route element={<LayoutSistema />} >
             <Route path="/" element={<Inicio />} />
-            <Route path="/chats" element={<Chats />} />
+            <Route path="atendimento" >
+                <Route path="chats" element={<Chats />} >
+                    <Route path=":uuidChat" element={<Chat />} />
+                </Route>
+            </Route>
         </Route>
     )
 
     return (
-        <BrowserRouter>
-            <Routes>
-                {
-                    usuario ?
-                        rotaUsuarioLogado :
-                        <Route path="*" element={<Login />} />
-                }
-            </Routes>
-        </BrowserRouter>
+        <Routes>
+            {
+                usuario ?
+                    rotaUsuarioLogado :
+                    <Route path="*" element={<Login />} />
+            }
+        </Routes>
     );
 }

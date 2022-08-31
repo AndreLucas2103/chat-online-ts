@@ -1,22 +1,13 @@
+import { AppUseEffects } from "modules/AppUseEffects";
 import { useEffect, useState } from "react";
-import toast, { Toaster, useToasterStore } from "react-hot-toast"
+import { Toaster } from "react-hot-toast"
+import { BrowserRouter } from "react-router-dom";
 import { LoadingSpinnerPage } from "./components/spinner/SpinnerLoading"
 import { AppRoutes } from "./routes/AppRoutes"
 import { socket } from "./utils/services/socketio";
 
 export const App = () => {
   const [socketConnected, setIsConnected] = useState(false);
-
-  const { toasts } = useToasterStore();
-
-  const TOAST_LIMIT = 1
-
-  useEffect(() => {
-    toasts
-      .filter((t) => t.visible) // Only consider visible toasts
-      .filter((_, i) => i >= TOAST_LIMIT) // Is toast index over limit?
-      .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) for no exit animation
-  }, [toasts]);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -36,7 +27,10 @@ export const App = () => {
   if (!socketConnected) return null
 
   return (
-    <>
+    <BrowserRouter>
+
+      <AppUseEffects /> {/* Efeitos para rodar a aplicação corretamente */}
+
       <LoadingSpinnerPage /> {/* rodar o spinner da aplicação*/}
       <AppRoutes />
       <Toaster position="top-right"
@@ -63,6 +57,7 @@ export const App = () => {
             },
           },
         }} /> {/* Notificação toas do sistema */}
-    </>
+    </BrowserRouter>
   )
 }
+
