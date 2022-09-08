@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlserver"
+    url      = env("DATABASE_URL")
+}
+
+model Usuario {
+    id            BigInt   @id @default(autoincrement())
+    primeiroNome  String   @db.VarChar(63)
+    nomeCompleto  String   @db.VarChar(127)
+    foto          String   @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y") @db.VarChar(255)
+    email         String   @unique @db.VarChar(127)
+    senha         String   @db.VarChar(511)
+    administrador Int      @default(0) @db.Bit
+    situacao      Int      @default(1) @db.TinyInt // 1- ativo, 2- inativo
+    statusChat    Int      @default(3) @db.TinyInt // 1-online, 2- ausente, 3-desconectado
+    socketId      String?  @db.VarChar(127)
+    createdAt     DateTime @default(now()) @db.DateTime2
+    updatedAt     DateTime @updatedAt @db.DateTime2
+
+    usuarioResponsavel Chat[]     @relation("usuarioResponsavel")
+    usuarioFila        Chat[]     @relation("usuarioFila")
+    Mensagem           Mensagem[]
+
+    @@map("usuario")
+}
+
+model Cliente {
+    id        BigInt   @id @default(autoincrement())
+    email     String   @db.VarChar(127)
+    foto      String   @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y") @db.VarChar(255)
+    nome      String   @db.VarChar(127)
+    createdAt DateTime @default(now()) @db.DateTime2
+    updatedAt DateTime @updatedAt @db.DateTime2
+
+    Chat     Chat[]
+    Mensagem Mensagem[]
+
+    @@map("cliente")
+}
+
+model Chat {
+    id         BigInt    @id @default(autoincrement())
+    idguid     String    @unique @default(dbgenerated("NEWID()")) @db.UniqueIdentifier
+    situacao   Int       @default(1) @db.TinyInt // 1- aguardando, 2- andamento, 3-finalizado, 4-transferindo 
+    dataInicio DateTime  @default(now()) @db.DateTime2
+    dataFim    DateTime? @db.DateTime2
+
+    idCliente BigInt?  @db.BigInt
+    cliente   Cliente? @relation(fields: [idCliente], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+    idUsuarioResponsavel BigInt?  @db.BigInt
+    usuarioResponsavel   Usuario? @relation(name: "usuarioResponsavel", fields: [idUsuarioResponsavel], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+    idUsuarioFila BigInt?  @db.BigInt
+    usuarioFila   Usuario? @relation(name: "usuarioFila", fields: [idUsuarioFila], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+    Mensagem Mensagem[]
+
+    @@map("chat")
+}
+
+model Mensagem {
+    id       String   @id @default(dbgenerated("NEWID()")) @db.UniqueIdentifier
+    mensagem String   @db.VarChar(4095)
+    data     DateTime @default(now()) @db.DateTime2
+
+    idChat BigInt @db.BigInt
+    chat   Chat   @relation(fields: [idChat], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+    idUsuario BigInt?  @db.BigInt
+    usuario   Usuario? @relation(fields: [idUsuario], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+    idCliente BigInt?  @db.BigInt
+    cliente   Cliente? @relation(fields: [idCliente], references: [id], onUpdate: NoAction, onDelete: NoAction)
+}
