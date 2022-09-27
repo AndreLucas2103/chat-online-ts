@@ -2,7 +2,7 @@ import { Action, AnyAction } from "redux";
 import { SET_CLIENTE } from "../../types/clienteTypes";
 
 interface IClienteRedux {
-    id: string;
+    id: number;
     nome: string;
     foto: string;
     email: string;

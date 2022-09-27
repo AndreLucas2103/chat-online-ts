@@ -6,6 +6,7 @@ import { IUsuario } from 'interfaces/IUsuario'
 import { useCookies } from 'react-cookie'
 import { useForm } from 'react-hook-form'
 import { setUsuario } from 'redux/store/actions/Usuario.action'
+import { io } from 'socket.io-client'
 import { ICallbackSocket } from '../../interfaces/ICallbackSocket'
 
 interface ILoginFormData {
@@ -16,21 +17,28 @@ interface ILoginFormData {
 export const Login = () => {
     const [cookies, setCookie, removeCookie] = useCookies([authToken.nomeToken]);
 
-    const { register, handleSubmit } = useForm<ILoginFormData>();
+    const { register, handleSubmit, setValue } = useForm<ILoginFormData>();
 
     const dispatch = useAppDispatch();
 
     const onSubmitLogin = (data: ILoginFormData) => {
-        socket.emit('auth_login', data.email, (callback: ICallbackSocket<{ token: string, usuario: IUsuario }>) => {
+        socket.emit('auth_login', data, (callback: ICallbackSocket<{ token: string, usuario: IUsuario }>) => {
 
-            console.log('ok')
             if (callback.erro) {
                 toastError(callback.erro.mensagem)
+
+                return
             }
 
             const { data: { usuario } } = callback
 
             setCookie(authToken.nomeToken, callback.data.token, { path: '/' })
+
+            socket.auth = { token: callback.data.token }; // defino o token para sempre ser enviado como auth
+            socket.disconnect() // desconecto o socket e conecto novamente, pois vai ser necessário recomeçar a conexão para pegar o token
+            setTimeout(() => {
+                socket.connect();
+            }, 500)
 
             dispatch(setUsuario({
                 administrador: usuario.administrador,
@@ -102,6 +110,27 @@ export const Login = () => {
                             className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
                             Acessar
+                        </button>
+                    </div>
+
+                    <div className='mt-2'>
+                        <button
+                            type='button'
+                            onClick={() => {
+                                setValue('email', 'usuario1@mail.com')
+                                setValue('senha', '123456')
+                            }}
+                        >
+                            usuario 1
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => {
+                                setValue('email', 'usuario2@mail.com')
+                                setValue('senha', '123456')
+                            }}
+                        >
+                            usuario 2
                         </button>
                     </div>
                 </form>

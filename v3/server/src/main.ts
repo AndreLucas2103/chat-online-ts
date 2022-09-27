@@ -16,6 +16,8 @@ async function bootstrap() {
         })
     );
 
+    /* app.setGlobalPrefix("/api"); */
+
     app.useWebSocketAdapter(new SocketAdapter(app));
 
     await app.listen(process.env.PORT || 3030)

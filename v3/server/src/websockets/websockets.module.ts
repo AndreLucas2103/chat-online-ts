@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
-import { WebsocketsGateway } from './events/websockets.gateway';
-import { UsuarioService } from './services/usuario.service';
-import { ChatService } from './services/chat.service';
-import { MensagemService } from './services/mensagem.service';
-import { ClienteService } from './services/cliente.service';
-import { PrismaService } from '../database/PrismaService';
-import { AuthLoginGateway } from './events/auth-login.gateway';
+import { UsuarioModule } from './modules/usuario/usuario.module';
+import { SocketModule } from './modules/socket/socket.module';
+import { ClienteModule } from './modules/cliente/cliente.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
-    providers: [WebsocketsGateway, UsuarioService, ChatService, MensagemService, ClienteService, PrismaService, AuthLoginGateway]
+    imports: [
+        UsuarioModule,
+        SocketModule,
+        ClienteModule,
+        ChatModule,
+    ]
 })
 export class WebsocketsModule {}

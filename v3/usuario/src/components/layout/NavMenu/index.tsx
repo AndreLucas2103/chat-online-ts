@@ -118,7 +118,7 @@ const DropdownMenuAlterarStatus = () => {
 
     const alterarStatus = () => {
         socket.emit('usuario_atualizar_status', {
-            idUsuario: usuario?._id,
+            idUsuario: usuario?.id,
             statusChat: usuario?.statusChat === 1 ? 2 : 1
         }, (callback: ICallbackSocket) => {
             if (callback?.erro) {

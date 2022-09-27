@@ -1,14 +1,21 @@
+import { ICliente } from "./ICliente";
+import { IUsuario } from "./IUsuario";
+
 export interface IChat {
     id: number;
-    cliente: {
-        nome: string;
-        foto: string;
-        email: string;
-    };
     situacao: 1 | 2 | 3; // 1-aguardando, 2-andamento, 3-finalizado
-    idUsuarioFila: number | null;
     uuid: string;
-    novaMensagem: number;
-    segundosFila: number;
     dataInicio: Date | string;
+    dataFim: Date | string | null;
+
+    idCliente: number | null;
+    idUsuarioResponsavel: number | null;
+    idUsuarioFila: number | null;
+
+    cliente?: ICliente | null;
+    usuarioResponsavel?: IUsuario | null;
+    usuarioFila?: IUsuario | null;
+
+    novaMensagem?: number;
+    segundosFila?: number;
 }

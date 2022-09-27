@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react"
 import parse from 'html-react-parser';
 import { IChat } from "interfaces/IChat"
 import { setChat } from "redux/store/actions/Chat.action"
+import { ICallbackSocket } from "interfaces/ICallbackSocket"
+import { setCliente } from "redux/store/actions/Cliente.action"
 
 interface IChatAtendimento extends IChat {
     usuarioAtendimento: IUsuario
@@ -19,12 +21,37 @@ export const Chat = () => {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        socket.on('usuario_aceitar_chat', (data: { data: { chat: IChatAtendimento} }) => {
+        socket.on('usuario_aceitar_chat', (data: { data: { chat: IChatAtendimento } }) => {
             dispatch(setChat(data.data.chat))
         })
 
         return () => {
             socket.off('usuario_aceitar_chat')
+        }
+    }, [chat])
+
+    useEffect(() => { // verifica sempre que um socket é desconectado do servidor
+        socket.on('disconnect_socket', (callback: ICallbackSocket<{
+            usuario: IUsuario | null,
+            cliente: ICliente | null
+        }>) => {
+            const { data: { cliente, usuario } } = callback;
+
+            console.log(callback)
+
+            if (usuario) {
+                if (chat?.usuarioAtendimento?.id === usuario.id) {
+                    dispatch(setChat({
+                        ...chat,
+                        situacao: 3
+                    }))
+                }
+            }
+
+        })
+
+        return () => {
+            socket.off('disconnect_socket')
         }
     }, [chat])
 
@@ -34,7 +61,7 @@ export const Chat = () => {
         <div className="text-padrao font-normal text-normal bg-[#f1f1f1] h-screen">
             {chat.situacao === 1 && <AguardandoAtendimento />}
             {
-                chat.situacao === 2 && <ChatAtendimento />
+                chat.situacao > 1 && <ChatAtendimento />
             }
 
         </div>
@@ -57,6 +84,8 @@ interface IMensagemSocket extends IMensagem {
 }
 
 const ChatAtendimento = () => {
+    const dispatch = useAppDispatch()
+
     const { chat } = useAppSelector(state => state.chat)
     const { cliente } = useAppSelector(state => state.cliente)
 
@@ -86,12 +115,26 @@ const ChatAtendimento = () => {
         }
     }
 
+    const ButtonNovoAtendimento = () => {
+
+        return (
+            <button
+                onClick={() => {
+                    dispatch(setChat(null))
+                    dispatch(setCliente(null))
+                }}
+            >
+                Novo Atendimento
+            </button>
+        )
+    }
+
     const enviarMensagem = () => { // enviar mensagem para o socket
         if (mensagem.length > 0) {
             socket.emit(
                 'nova_mensagem',
                 {
-                    idChat: chat?._id,
+                    idChat: chat?.id,
                     mensagem,
                     idCliente: cliente?.id,
                 },
@@ -107,7 +150,9 @@ const ChatAtendimento = () => {
     return (
         <div className="flex flex-col h-full justify-between">
             <div className="min-h-[80px] flex items-center px-20px border-b">
-                <p className="text-16px font-bold">Atendimento Online</p>
+                <p className="text-16px font-bold">Atendimento Online -
+                    {chat?.situacao === 3 && <ButtonNovoAtendimento />}
+                </p>
             </div>
             <div
                 className="flex flex-col space-y-[6px] overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch p-30px w-full"
@@ -177,6 +222,7 @@ const ChatAtendimento = () => {
                     onChange={e => setMensagem(e.target.value)}
                     onKeyPress={commentEnterSubmit}
                     className="w-full h-[60px] border-2 border-gray-300 rounded-lg focus:ring-0 focus:border text-padrao"
+                    disabled={chat?.situacao === 3 ? true : false}
                 />
                 <button
                     type="button"

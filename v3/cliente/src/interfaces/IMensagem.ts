@@ -1,5 +1,5 @@
 export interface IMensagem {
-    _id: string;
+    id: string;
     idCliente: string | null;
     idUsuario: string | null;
     idChat: string;

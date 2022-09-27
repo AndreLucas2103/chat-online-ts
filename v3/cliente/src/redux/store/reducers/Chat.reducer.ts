@@ -2,7 +2,7 @@ import { IUsuario } from "interfaces/IUsuario";
 import { SET_CHAT } from "../../types/chatTypes";
 
 interface IChatRedux {
-    _id: string;
+    id: number;
     situacao: 1 | 2 | 3; // 1-aguardando, 2-andamento, 3-finalizado
     uuid: string;
     usuarioAtendimento: IUsuario | null;

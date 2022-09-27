@@ -36,6 +36,7 @@ model Cliente {
     email     String   @db.VarChar(127)
     foto      String   @default("https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y") @db.VarChar(255)
     nome      String   @db.VarChar(127)
+    socketId  String?  @db.VarChar(127)
     createdAt DateTime @default(now()) @db.DateTime2
     updatedAt DateTime @updatedAt @db.DateTime2
 
@@ -47,7 +48,7 @@ model Cliente {
 
 model Chat {
     id         BigInt    @id @default(autoincrement())
-    idguid     String    @unique @default(dbgenerated("NEWID()")) @db.UniqueIdentifier
+    uuid       String    @unique @default(dbgenerated("NEWID()")) @db.UniqueIdentifier
     situacao   Int       @default(1) @db.TinyInt // 1- aguardando, 2- andamento, 3-finalizado, 4-transferindo 
     dataInicio DateTime  @default(now()) @db.DateTime2
     dataFim    DateTime? @db.DateTime2

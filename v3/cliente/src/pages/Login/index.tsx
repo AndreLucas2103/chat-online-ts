@@ -26,7 +26,7 @@ export const Login = () => {
                 "email": data.email,
                 "nome": data.nome
             },
-            (callback: ICallbackSocket<{cliente: ICliente, chat: IChat}>) => {
+            (callback: ICallbackSocket<{ cliente: ICliente, chat: IChat }>) => {
                 if (callback.erro) {
                     toastError(callback.erro.mensagem)
                 } else {
@@ -34,10 +34,10 @@ export const Login = () => {
                         email: data.email,
                         nome: data.nome,
                         foto: callback.data.cliente.foto,
-                        id: callback.data.cliente._id
+                        id: callback.data.cliente.id
                     }))
                     dispatch(setChat({
-                        _id: callback.data.chat._id,
+                        id: callback.data.chat.id,
                         situacao: callback.data.chat.situacao,
                         usuarioAtendimento: null,
                         uuid: callback.data.chat.uuid

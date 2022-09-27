@@ -1,5 +1,5 @@
 export interface IUsuario {
-    _id: string;
+    id: number;
     primeiroNome: string;
     foto: string;
 }

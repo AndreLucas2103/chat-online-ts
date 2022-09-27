@@ -4,11 +4,14 @@ import { dateString } from "components/text/formatoDate";
 import { ICallbackSocket } from "interfaces/ICallbackSocket";
 import { IChat } from "interfaces/IChat";
 import { Link, Outlet } from "react-router-dom"
-import { setChatsAndamento, setChatsFilaEspera, setChatsRecusados } from "redux/store/actions/Chat.action";
+import { chatsAguardandoRemover } from "redux/store/actions/ChatsAguardando.action";
+import { chatsAndamentoAdicionar } from "redux/store/actions/ChatsAndamento.action";
+import { chatsRecusadoAdicionar } from "redux/store/actions/ChatsRecusado.action";
 import { MenusPagina } from "../components/MenusPagina"
 
 export const Chats = () => {
-    const { chatsFilaEspera, chatsAndamento } = useAppSelector((state) => state.chat);
+    const chatsAguardando = useAppSelector((state) => state.chatsAguardando);
+    const chatsAndamento = useAppSelector((state) => state.chatsAndamento);
 
     return (
         <div className="flex py-10px px-20px h-full">
@@ -30,7 +33,7 @@ export const Chats = () => {
                 <section className="mt-20px ">
                     <div className="grid gap-[6px]">
                         {
-                            chatsFilaEspera.map((chat, index) =>
+                            chatsAguardando.map((chat, index) =>
                                 <ChatCardAguardando key={index} chat={chat} />
                             )
                         }
@@ -46,32 +49,43 @@ export const Chats = () => {
 }
 
 const ChatCardAguardando = ({ chat }: { chat: IChat }) => {
-    const { chatsRecusados, chatsFilaEspera, chatsAndamento } = useAppSelector((state) => state.chat);
     const { usuario } = useAppSelector((state) => state.usuario);
 
     const dispatch = useAppDispatch();
 
     function recusarChat() {
-        dispatch(setChatsRecusados([...chatsRecusados, chat]));
-        dispatch(setChatsFilaEspera(chatsFilaEspera.filter((c) => c._id !== chat._id)));
+        dispatch(chatsRecusadoAdicionar(chat))
+        dispatch(chatsAguardandoRemover(chat.id))
     }
 
     function aceitarChat() {
         socket.emit(
             'usuario_aceitar_chat',
             {
-                idChat: chat._id,
-                idUsuario: usuario?._id
+                idChat: chat.id,
+                idUsuario: usuario?.id
             },
-            (callback: ICallbackSocket<any>) => {
-                if (!callback.erro) {
-                    dispatch(setChatsFilaEspera(chatsFilaEspera.filter((c) => c._id !== chat._id)));
-                    dispatch(setChatsAndamento([...chatsAndamento, {
-                        ...chat,
-                        idUsuarioFila: null,
-                        situacao: 2,
-                    }]));
-                }
+            (callback: ICallbackSocket<{ chat: IChat }>) => {
+
+                dispatch(chatsAguardandoRemover(chat.id))
+                dispatch(chatsAndamentoAdicionar({
+                    cliente: {
+                        email: callback.data.chat.cliente?.nome || "",
+                        foto: callback.data.chat.cliente?.foto || "",
+                        nome: callback.data.chat.cliente?.nome || "",
+                        id: callback.data.chat.cliente?.id || 1,
+                        socketId: callback.data.chat.cliente?.socketId || "",
+                    },
+                    idCliente: callback.data.chat.cliente?.id || 1,
+                    id: callback.data.chat.id,
+                    idUsuarioFila: null,
+                    situacao: callback.data.chat.situacao,
+                    uuid: callback.data.chat.uuid,
+                    novaMensagem: 0,
+                    dataInicio: callback.data.chat.dataInicio,
+                    idUsuarioResponsavel: callback.data.chat.idUsuarioResponsavel,
+                    dataFim: null,
+                }))
             }
         )
     }
@@ -94,7 +108,7 @@ const ChatCardAguardando = ({ chat }: { chat: IChat }) => {
             <div
                 className="flex justify-between py-[10px] px-[10px] "
             >
-                <span>{chat.cliente.nome}</span>
+                <span>{chat.cliente?.nome}</span>
             </div>
 
             <div className="px-[8px] mb-10px flex justify-center">
@@ -130,15 +144,16 @@ const ChatCardAndamento = ({ chat }: { chat: IChat }) => {
                     <span className="text-medium text-12px ml-10px">{dateString(chat.dataInicio, { format: "HH:mm" })}</span>
                 </div>
                 <div
-                    className="text-10px text-green-600 px-[10px] py-[1px] bg-gray-200 rounded-bl-[14px] rounded-tr-[14px]"
+                    className="text-10px px-[10px] py-[1px] bg-gray-200 rounded-bl-[14px] rounded-tr-[14px]"
                 >
-                    Andamento
+                    {chat.situacao === 2 && <p className="text-green-600">Andamento</p>}
+                    {chat.situacao === 3 && <p className="text-red-600">Finalizado</p>}
                 </div>
             </div>
             <div
                 className="flex justify-between py-[10px] px-[10px] "
             >
-                <span>{chat.cliente.nome}</span>
+                <span>{chat?.cliente?.nome}</span>
             </div>
         </Link>
     )

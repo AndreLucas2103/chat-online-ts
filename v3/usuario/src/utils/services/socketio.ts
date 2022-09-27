@@ -1,3 +1,8 @@
 import socketIOClient from "socket.io-client";
 
-export const socket = socketIOClient("http://localhost:3030");
+export const socket = socketIOClient("http://localhost:3030", {
+    reconnection: true,
+    auth: {
+        token: ""
+    },
+});
