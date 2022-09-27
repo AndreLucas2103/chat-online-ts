@@ -4,7 +4,7 @@ import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
 import { toastError, toastSuccess } from "../../components/avisos/toast";
 import { authToken } from "../../config/authToken";
-import { setAcessoRestrito, setLoading } from "../../redux/store/actions/Geral.action";
+import { /* setAcessoRestrito, */ setLoading } from "../../redux/store/actions/Geral.action";
 import { api } from "../services/api";
 
 interface IErrorState { // tipagem de erro, padrão enviado pela API
@@ -35,7 +35,7 @@ export function useMutation<TDataSend = unknown, TDataResponse = unknown>(
 
     const mutateAPI = url[0] === '/' ? api : axios // decide se a api vai ser a padrão ou requisição para outras
 
-    const [cookies, ] = useCookies([authToken.nomeToken]);
+    const [cookies,] = useCookies([authToken.nomeToken]);
     api.defaults.headers.common['Authorization'] = 'Bearer ' + cookies[authToken.nomeToken]
 
     const [data, setData] = useState<TDataResponse | null>(null); // valor que será retorndo para o front, resultado da consulta 
@@ -88,10 +88,10 @@ export function useMutation<TDataSend = unknown, TDataResponse = unknown>(
             if (err.response?.data?.erro?.statusCode === 403) {
 
                 if (!options?.notOpenModalWhithoutPermission) {
-                    dispatch(setAcessoRestrito({
+                    /* dispatch(setAcessoRestrito({
                         aberto: true,
                         codigoPermissao: err.response?.data?.erro?.codigoPermissao || "",
-                    }))
+                    })) */
                 }
 
                 setWithoutPermission({ codigoPermissao: err.response?.data?.erro?.codigoPermissao || "" });

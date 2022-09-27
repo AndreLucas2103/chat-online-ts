@@ -91,8 +91,8 @@ export const NavMenu = () => {
 
 const MenuChats = ({ menu }: { menu: IMenu }) => {
 
-    const chatsAndamento = useAppSelector(state => state.chat.chatsAndamento)
-    const chatsFila = useAppSelector(state => state.chat.chatsFilaEspera)
+    const chatsAndamento = useAppSelector(state => state.chatsAndamento)
+    const chatsFila = useAppSelector(state => state.chatsAguardando)
 
     const chatComMensagem = chatsAndamento.find(chat => chat.novaMensagem !== 0)
 
