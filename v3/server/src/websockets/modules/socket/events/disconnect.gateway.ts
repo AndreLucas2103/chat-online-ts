@@ -18,8 +18,10 @@ export class DisconnectGateway {
     ) {}
 
     async handleDisconnect(
-        @ConnectedSocket() socket: Socket
+        @ConnectedSocket() socket: Socket,
+        reason: string,
     ) {
+        console.log(reason)
         const usuario = await this.usuario.findBySocketId(socket.id);
 
         let cliente: Cliente

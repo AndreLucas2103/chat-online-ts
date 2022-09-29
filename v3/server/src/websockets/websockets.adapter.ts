@@ -14,7 +14,8 @@ export class SocketAdapter extends IoAdapter {
             cors: {
                 origin: '*',
             },
-            /* pingTimeout: 50000 */ // tempo que o servidor vai ficar esperando o socket reconectar 
+            pingInterval: 25000,
+            pingTimeout: 600000  // tempo que o servidor vai ficar esperando o socket reconectar 
         } as ServerOptions);
         return server;
     }
