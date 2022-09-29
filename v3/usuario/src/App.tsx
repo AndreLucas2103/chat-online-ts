@@ -1,4 +1,3 @@
-import { AppUseEffects } from "modules/AppUseEffects";
 import { useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast"
 import { BrowserRouter } from "react-router-dom";
@@ -7,6 +6,8 @@ import { chatsAndamentoSocketDesconectado } from "redux/store/actions/ChatsAndam
 import { LoadingSpinnerPage } from "./components/spinner/SpinnerLoading"
 import { AppRoutes } from "./routes/AppRoutes"
 import { useAppDispatch } from "./utils/hooks/useRedux";
+import { SocketIoProvider } from "./utils/providers/SocketIoProvider";
+import { ToastProvider } from "./utils/providers/ToastProvider";
 import { socket } from "./utils/services/socketio";
 
 export const App = () => {
@@ -17,6 +18,10 @@ export const App = () => {
     useEffect(() => {
         socket.on('connect', () => {
             setIsConnected(true);
+        });
+
+        socket.io.on("reconnect_attempt", (attempt) => {
+            console.log(attempt)
         });
 
         socket.on('disconnect', (reason) => {
@@ -31,42 +36,18 @@ export const App = () => {
         };
     }, []);
 
-    if (!socketConnected) return null
-
     return (
-        <BrowserRouter>
-
-            <AppUseEffects /> {/* Efeitos para rodar a aplicação corretamente */}
-
+        <ToastProvider> {/* Provider do toast, para avisos */}
             <LoadingSpinnerPage /> {/* rodar o spinner da aplicação*/}
-            <AppRoutes />
-            <Toaster
-                position="top-right"
-                reverseOrder={false}
-                gutter={8}
-                containerClassName=""
-                containerStyle={{}}
-                toastOptions={{
-                    duration: 3000,
-                    style: {
-                        color: '#fff',
-                        fontSize: '14px',
-                    },
-                    // Default options for specific types
-                    success: {
-                        style: {
-                            background: '#009900',
-                        },
-                    },
-                    error: {
-                        duration: 5000,
-                        style: {
-                            background: '#cc2121',
-                        },
-                    },
-                }}
-            /> {/* Notificação toas do sistema */}
-        </BrowserRouter>
+
+            <BrowserRouter>
+                <SocketIoProvider>
+                    <AppRoutes />
+                </SocketIoProvider>
+            </BrowserRouter>
+
+        </ToastProvider>
+
     )
 }
 

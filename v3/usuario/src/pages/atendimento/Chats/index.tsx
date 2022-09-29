@@ -21,7 +21,7 @@ export const Chats = () => {
                 <section className="mt-20px ">
                     <p className="font-semibold">FIla de atendimentos</p>
 
-                    <div className="grid gap-[6px]">
+                    <div className="grid gap-y-[6px]">
                         {
                             chatsAndamento.map((chat, index) =>
                                 <ChatCardAndamento key={index} chat={chat} />
@@ -31,7 +31,7 @@ export const Chats = () => {
                 </section>
 
                 <section className="mt-20px ">
-                    <div className="grid gap-[6px]">
+                    <div className="grid gap-y-[6px]">
                         {
                             chatsAguardando.map((chat, index) =>
                                 <ChatCardAguardando key={index} chat={chat} />
@@ -54,7 +54,10 @@ const ChatCardAguardando = ({ chat }: { chat: IChat }) => {
     const dispatch = useAppDispatch();
 
     function recusarChat() {
-        dispatch(chatsRecusadoAdicionar(chat))
+        dispatch(chatsRecusadoAdicionar({
+            ...chat,
+            recusado: true
+        }))
         dispatch(chatsAguardandoRemover(chat.id))
     }
 

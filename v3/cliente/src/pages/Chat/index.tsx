@@ -96,7 +96,7 @@ const ChatAtendimento = () => {
 
     useEffect(() => {
         socket.on('nova_mensagem', (mensagem: { data: { mensagem: IMensagemSocket } }) => {
-            setMensagens([...mensagens, mensagem.data.mensagem])
+            console.log(mensagem)
         })
 
         if (scrollMensagemNova.current) {

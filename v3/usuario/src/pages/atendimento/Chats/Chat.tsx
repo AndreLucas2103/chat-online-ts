@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 export const Chat = () => {
     const { uuidChat } = useParams();
 
-
     return (
         <div className="flex h-full">
             <div className="w-8/12 px-20px py-10px">

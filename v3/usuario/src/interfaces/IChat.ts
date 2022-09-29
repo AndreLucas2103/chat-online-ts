@@ -16,6 +16,8 @@ export interface IChat {
     usuarioResponsavel?: IUsuario | null;
     usuarioFila?: IUsuario | null;
 
+    // fields para controle no chat, não existem no server esses campos
     novaMensagem?: number;
     segundosFila?: number;
+    recusado?: boolean;
 }

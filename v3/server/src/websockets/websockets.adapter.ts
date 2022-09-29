@@ -1,5 +1,5 @@
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { ServerOptions } from 'socket.io';
+import { ServerOptions, Socket } from 'socket.io';
 
 export class SocketAdapter extends IoAdapter {
     createIOServer(
@@ -14,8 +14,12 @@ export class SocketAdapter extends IoAdapter {
             cors: {
                 origin: '*',
             },
-            pingTimeout: 2000 // tempo que o servidor vai ficar esperando o socket reconectar 
+            /* pingTimeout: 50000 */ // tempo que o servidor vai ficar esperando o socket reconectar 
         } as ServerOptions);
         return server;
+    }
+
+    async handleConnection(client: Socket, ...args: any[]) {
+        client.setMaxListeners(20);
     }
 }
