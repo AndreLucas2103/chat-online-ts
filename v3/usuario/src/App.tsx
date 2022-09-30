@@ -30,6 +30,14 @@ export const App = () => {
             setIsConnected(false);
         });
 
+        socket.on('ping', () => {
+            console.log('ping')
+        })
+
+        socket.on('opa', () => {
+            console.log('ping')
+        })
+
         return () => {
             socket.off('connect');
             socket.off('disconnect');

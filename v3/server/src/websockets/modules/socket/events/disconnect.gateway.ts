@@ -1,6 +1,5 @@
 import { ConnectedSocket, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Prisma, Cliente } from '@prisma/client';
-import { iif } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from '../../chat/chat.service';
 import { ClienteService } from '../../cliente/cliente.service';
@@ -11,6 +10,8 @@ export class DisconnectGateway {
     @WebSocketServer()
     io: Server;
 
+    tentativas: string[]
+
     constructor(
         private usuario: UsuarioService,
         private cliente: ClienteService,
@@ -19,12 +20,24 @@ export class DisconnectGateway {
 
     async handleDisconnect(
         @ConnectedSocket() socket: Socket,
-        reason: string,
     ) {
-        console.log(reason)
         const usuario = await this.usuario.findBySocketId(socket.id);
 
         let cliente: Cliente
+
+        // tentar reconectar, start
+
+        function reconectar() {
+            setInterval(() => {
+                socket.emit('opa', true, () => {
+                    console.log('as')
+                })
+            }, 2000)
+        }
+
+        reconectar()
+
+        // tentar reconhecer, end
 
         if (usuario) {
 

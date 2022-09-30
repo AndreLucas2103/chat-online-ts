@@ -14,13 +14,10 @@ export class SocketAdapter extends IoAdapter {
             cors: {
                 origin: '*',
             },
-            pingInterval: 25000,
-            pingTimeout: 600000  // tempo que o servidor vai ficar esperando o socket reconectar 
+            pingInterval: 25,
+            pingTimeout: 99999,
+            connectTimeout: 86400,
         } as ServerOptions);
         return server;
-    }
-
-    async handleConnection(client: Socket, ...args: any[]) {
-        client.setMaxListeners(20);
     }
 }
