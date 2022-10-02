@@ -25,19 +25,9 @@ export class DisconnectGateway {
 
         let cliente: Cliente
 
-        // tentar reconectar, start
-
-        function reconectar() {
-            setInterval(() => {
-                socket.emit('opa', true, () => {
-                    console.log('as')
-                })
-            }, 2000)
-        }
-
-        reconectar()
-
         // tentar reconhecer, end
+
+        console.log(socket.request)
 
         if (usuario) {
 
@@ -101,7 +91,7 @@ export class DisconnectGateway {
             }
         }
 
-        /* console.log("Disconnect client " + socket.id) */
+        console.log("Disconnect client " + socket.id)
 
         this.io.emit("disconnect_socket", {
             data: {

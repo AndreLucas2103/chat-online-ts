@@ -1,5 +1,5 @@
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { ServerOptions, Socket } from 'socket.io';
+import { Server, ServerOptions, Socket } from 'socket.io';
 
 export class SocketAdapter extends IoAdapter {
     createIOServer(
@@ -9,15 +9,15 @@ export class SocketAdapter extends IoAdapter {
             server?: any;
         },
     ) {
-        const server = super.createIOServer(port, {
+        const server: Server = super.createIOServer(port, {
             ...options,
             cors: {
                 origin: '*',
             },
-            pingInterval: 25,
-            pingTimeout: 99999,
-            connectTimeout: 86400,
+            pingInterval: 1000,
+            pingTimeout: 4000
         } as ServerOptions);
+
         return server;
     }
 }
