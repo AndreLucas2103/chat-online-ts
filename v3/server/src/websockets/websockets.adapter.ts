@@ -15,7 +15,7 @@ export class SocketAdapter extends IoAdapter {
                 origin: '*',
             },
             pingInterval: 1000,
-            pingTimeout: 4000
+            pingTimeout: 10000
         } as ServerOptions);
 
         return server;

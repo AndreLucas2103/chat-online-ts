@@ -10,6 +10,10 @@ import { SocketIoProvider } from "./utils/providers/SocketIoProvider";
 import { ToastProvider } from "./utils/providers/ToastProvider";
 import { socket } from "./utils/services/socketio";
 
+import { parse } from "cookie";
+
+const COOKIE_NAME = "TESTEAWSLOAD";
+
 export const App = () => {
     const [socketConnected, setIsConnected] = useState(false);
 
@@ -33,6 +37,24 @@ export const App = () => {
         socket.io.on('ping', () => {
             console.log('ping')
         })
+
+        socket.io.on("open", () => {
+            socket.io.engine.transport.on("pollComplete", () => {
+                const request = socket.io.engine.transport.pollXhr.xhr;
+                const cookieHeader = request.getResponseHeader("set-cookie");
+                if (!cookieHeader) {
+                    return;
+                }
+                cookieHeader.forEach((cookieString: any) => {
+                    if (cookieString.includes(`${COOKIE_NAME}=`)) {
+                        const cookie = parse(cookieString);
+                        socket.io.opts.extraHeaders = {
+                            cookie: `${COOKIE_NAME}=${cookie[COOKIE_NAME]}`
+                        }
+                    }
+                });
+            });
+        });
 
         return () => {
             socket.off('connect');
