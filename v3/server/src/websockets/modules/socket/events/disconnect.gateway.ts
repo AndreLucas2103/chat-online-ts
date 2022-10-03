@@ -27,8 +27,6 @@ export class DisconnectGateway {
 
         // tentar reconhecer, end
 
-        console.log(socket.request)
-
         if (usuario) {
 
             await this.usuario.update(usuario.id, {

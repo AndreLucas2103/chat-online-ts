@@ -11,6 +11,13 @@ export class SocketAdapter extends IoAdapter {
     ) {
         const server: Server = super.createIOServer(port, {
             ...options,
+            cookie: {
+                name: "TESTEAWSLOAD",
+                path: "/",
+                httpOnly: true,
+                sameSite: "lax"
+            },
+            transports: ['polling', 'websocket'],
             cors: {
                 origin: '*',
             },

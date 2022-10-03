@@ -42,9 +42,11 @@ export const App = () => {
             socket.io.engine.transport.on("pollComplete", () => {
                 const request = socket.io.engine.transport.pollXhr.xhr;
                 const cookieHeader = request.getResponseHeader("set-cookie");
-                if (!cookieHeader) {
-                    return;
-                }
+
+                console.log(request)
+
+                if (!cookieHeader) return;
+
                 cookieHeader.forEach((cookieString: any) => {
                     if (cookieString.includes(`${COOKIE_NAME}=`)) {
                         const cookie = parse(cookieString);
